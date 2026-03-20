@@ -12,10 +12,10 @@ interface SidebarProps {
   onCreateTrip: () => void;
 }
 
-const navItems: { key: NavSection; label: string; icon: typeof LayoutGrid }[] = [
+const navItems: { key: NavSection; label: string; icon?: typeof LayoutGrid; emoji?: string }[] = [
   { key: 'overview', label: 'Overview', icon: LayoutGrid },
   { key: 'itinerary', label: 'Itinerary', icon: Calendar },
-  { key: 'expenses', label: '₹ Expenses', icon: LayoutGrid },
+  { key: 'expenses', label: 'Expenses', emoji: '₹' },
   { key: 'checklists', label: 'Checklists', icon: CheckSquare },
   { key: 'members', label: 'Members', icon: Users },
   { key: 'comments', label: 'Comments', icon: MessageSquare },
