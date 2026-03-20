@@ -18,6 +18,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
 
   const total = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const budget = Number(trip?.budget || 0);
+  const fmt = (n: number) => n.toLocaleString('en-IN');
 
   const handleAdd = () => {
     if (!desc.trim() || !amount) return;
@@ -30,16 +31,16 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-secondary rounded-lg p-3">
           <p className="text-[11px] text-muted-foreground mb-1">Total spent</p>
-          <p className="text-xl font-medium text-foreground tabular-nums">₹{total.toLocaleString()}</p>
+          <p className="text-xl font-medium text-foreground tabular-nums">₹{fmt(total)}</p>
         </div>
         <div className="bg-secondary rounded-lg p-3">
           <p className="text-[11px] text-muted-foreground mb-1">Budget</p>
-          <p className="text-xl font-medium text-foreground tabular-nums">₹{budget.toLocaleString()}</p>
+          <p className="text-xl font-medium text-foreground tabular-nums">₹{fmt(budget)}</p>
         </div>
         <div className="bg-secondary rounded-lg p-3">
           <p className="text-[11px] text-muted-foreground mb-1">Remaining</p>
           <p className={`text-xl font-medium tabular-nums ${budget - total >= 0 ? 'text-primary' : 'text-destructive'}`}>
-            ₹{(budget - total).toLocaleString()}
+            ₹{fmt(budget - total)}
           </p>
         </div>
       </div>
@@ -79,7 +80,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
               <p className="text-[13px] font-medium text-foreground">{e.description}</p>
               <p className="text-[11px] text-muted-foreground">{e.category} · {e.paid_by}</p>
             </div>
-            <p className="text-sm font-medium text-foreground tabular-nums">₹{Number(e.amount).toFixed(2)}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums">₹{Number(e.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
           </div>
         ))}
         {expenses.length === 0 && <p className="text-center text-sm text-muted-foreground py-4">No expenses yet</p>}
