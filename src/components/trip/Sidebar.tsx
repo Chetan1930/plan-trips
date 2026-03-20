@@ -1,4 +1,4 @@
-import { MapPin, LayoutGrid, Calendar, DollarSign, CheckSquare, Users, MessageSquare, Plus, LogOut } from 'lucide-react';
+import { MapPin, LayoutGrid, Calendar, CheckSquare, Users, MessageSquare, Plus, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import type { NavSection, Trip } from '@/lib/types';
 import { motion } from 'framer-motion';
@@ -12,10 +12,10 @@ interface SidebarProps {
   onCreateTrip: () => void;
 }
 
-const navItems: { key: NavSection; label: string; icon: typeof LayoutGrid }[] = [
+const navItems: { key: NavSection; label: string; icon?: typeof LayoutGrid; emoji?: string }[] = [
   { key: 'overview', label: 'Overview', icon: LayoutGrid },
   { key: 'itinerary', label: 'Itinerary', icon: Calendar },
-  { key: 'expenses', label: '₹ Expenses', icon: DollarSign },
+  { key: 'expenses', label: 'Expenses', emoji: '₹' },
   { key: 'checklists', label: 'Checklists', icon: CheckSquare },
   { key: 'members', label: 'Members', icon: Users },
   { key: 'comments', label: 'Comments', icon: MessageSquare },
@@ -39,14 +39,14 @@ export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto px-2 py-2">
         <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2 py-1.5">Menu</p>
-        {navItems.map(({ key, label, icon: Icon }) => (
+        {navItems.map(({ key, label, icon: Icon, emoji }) => (
           <button
             key={key}
             onClick={() => setActiveNav(key)}
             className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors mb-0.5
               ${activeNav === key ? 'bg-accent text-accent-foreground font-medium' : 'text-sidebar-foreground hover:bg-muted hover:text-foreground'}`}
           >
-            <Icon className="w-[15px] h-[15px] shrink-0 opacity-70" />
+            {Icon ? <Icon className="w-[15px] h-[15px] shrink-0 opacity-70" /> : <span className="w-[15px] h-[15px] shrink-0 flex items-center justify-center text-xs font-semibold opacity-70">{emoji}</span>}
             {label}
           </button>
         ))}
