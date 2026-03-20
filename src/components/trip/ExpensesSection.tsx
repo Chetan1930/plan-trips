@@ -30,7 +30,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-secondary rounded-lg p-3">
           <p className="text-[11px] text-muted-foreground mb-1">Total spent</p>
-          <p className="text-xl font-medium text-foreground tabular-nums">${total.toLocaleString()}</p>
+          <p className="text-xl font-medium text-foreground tabular-nums">₹{total.toLocaleString()}</p>
         </div>
         <div className="bg-secondary rounded-lg p-3">
           <p className="text-[11px] text-muted-foreground mb-1">Budget</p>
