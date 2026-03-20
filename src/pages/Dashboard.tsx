@@ -77,7 +77,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <>
-              {activeNav === 'overview' && <OverviewSection trip={activeTrip} activities={activities} expenses={expenses} checklist={[...checklist, ...packing]} members={members} />}
+              {activeNav === 'overview' && <OverviewSection trip={activeTrip} activities={activities} expenses={expenses} checklist={[...checklist, ...packing]} members={members} onTripDeleted={() => setActiveTripId(undefined)} />}
               {activeNav === 'itinerary' && <ItinerarySection tripId={activeTripId} activities={activities} />}
               {activeNav === 'expenses' && <ExpensesSection tripId={activeTripId} expenses={expenses} trip={activeTrip} />}
               {activeNav === 'checklists' && <ChecklistsSection tripId={activeTripId} checklist={checklist} packing={packing} />}

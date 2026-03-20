@@ -24,7 +24,38 @@ export function useCreateTrip() {
     mutationFn: async (trip: { name: string; destination: string; start_date?: string; end_date?: string; budget?: number; color?: string }) => {
       const { data, error } = await supabase.from('trips').insert({ ...trip, user_id: user!.id }).select().single();
       if (error) throw error;
+      // Auto-add owner as member
+      const initials = (user!.email || 'U').slice(0, 2).toUpperCase();
+      await supabase.from('trip_members').insert({
+        trip_id: data.id, name: user!.email?.split('@')[0] || 'Owner',
+        email: user!.email || '', role: 'owner', initials, color: '#5DCAA5', user_id: user!.id,
+      });
       return data as Trip;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['trips'] });
+      qc.invalidateQueries({ queryKey: ['members'] });
+    },
+  });
+}
+
+export function useUpdateTrip() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...fields }: Partial<Trip> & { id: string }) => {
+      const { error } = await supabase.from('trips').update(fields).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['trips'] }),
+  });
+}
+
+export function useDeleteTrip() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('trips').delete().eq('id', id);
+      if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['trips'] }),
   });
