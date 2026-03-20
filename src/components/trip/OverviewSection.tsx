@@ -65,7 +65,7 @@ export default function OverviewSection({ trip, activities, expenses, checklist,
       <div className="grid grid-cols-3 gap-3">
         <Metric label="Destination" value={trip.destination} />
         <Metric label="Duration" value={days ? `${days} days` : '—'} sub={dateRange} />
-        <Metric label="Total Budget" value={`₹${Number(trip.budget).toLocaleString()}`} sub={`₹${totalSpent.toLocaleString()} spent`} />
+        <Metric label="Total Budget" value={`₹${Number(trip.budget).toLocaleString('en-IN')}`} sub={`₹${totalSpent.toLocaleString('en-IN')} spent`} />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <MetricProgress label="Activities planned" value={activities.length} max={Math.max(activities.length, 1)} />
