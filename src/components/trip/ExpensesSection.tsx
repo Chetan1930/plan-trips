@@ -79,7 +79,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
               <p className="text-[13px] font-medium text-foreground">{e.description}</p>
               <p className="text-[11px] text-muted-foreground">{e.category} · {e.paid_by}</p>
             </div>
-            <p className="text-sm font-medium text-foreground tabular-nums">${Number(e.amount).toFixed(2)}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums">₹{Number(e.amount).toFixed(2)}</p>
           </div>
         ))}
         {expenses.length === 0 && <p className="text-center text-sm text-muted-foreground py-4">No expenses yet</p>}
