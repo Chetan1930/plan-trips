@@ -30,16 +30,16 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-secondary rounded-lg p-3">
           <p className="text-[11px] text-muted-foreground mb-1">Total spent</p>
-          <p className="text-xl font-medium text-foreground tabular-nums">${total.toLocaleString()}</p>
+          <p className="text-xl font-medium text-foreground tabular-nums">₹{total.toLocaleString()}</p>
         </div>
         <div className="bg-secondary rounded-lg p-3">
           <p className="text-[11px] text-muted-foreground mb-1">Budget</p>
-          <p className="text-xl font-medium text-foreground tabular-nums">${budget.toLocaleString()}</p>
+          <p className="text-xl font-medium text-foreground tabular-nums">₹{budget.toLocaleString()}</p>
         </div>
         <div className="bg-secondary rounded-lg p-3">
           <p className="text-[11px] text-muted-foreground mb-1">Remaining</p>
           <p className={`text-xl font-medium tabular-nums ${budget - total >= 0 ? 'text-primary' : 'text-destructive'}`}>
-            ${(budget - total).toLocaleString()}
+            ₹{(budget - total).toLocaleString()}
           </p>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-secondary rounded-lg p-3 mb-3 overflow-hidden">
               <div className="flex gap-2 mb-2 flex-wrap">
                 <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Description" className="flex-1 min-w-[120px] px-2.5 py-1.5 text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground placeholder:text-muted-foreground" />
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount ($)" className="w-24 px-2.5 py-1.5 text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground placeholder:text-muted-foreground" />
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount (₹)" className="w-24 px-2.5 py-1.5 text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground placeholder:text-muted-foreground" />
                 <select value={category} onChange={e => setCategory(e.target.value)} className="px-2.5 py-1.5 text-xs bg-card border border-input rounded-md text-foreground">
                   {categories.map(c => <option key={c}>{c}</option>)}
                 </select>
@@ -79,7 +79,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
               <p className="text-[13px] font-medium text-foreground">{e.description}</p>
               <p className="text-[11px] text-muted-foreground">{e.category} · {e.paid_by}</p>
             </div>
-            <p className="text-sm font-medium text-foreground tabular-nums">${Number(e.amount).toFixed(2)}</p>
+            <p className="text-sm font-medium text-foreground tabular-nums">₹{Number(e.amount).toFixed(2)}</p>
           </div>
         ))}
         {expenses.length === 0 && <p className="text-center text-sm text-muted-foreground py-4">No expenses yet</p>}

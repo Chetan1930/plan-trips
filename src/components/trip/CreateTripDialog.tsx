@@ -57,7 +57,7 @@ export default function CreateTripDialog({ open, onClose }: Props) {
                 <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="flex-1 px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring/20 text-foreground" />
                 <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="flex-1 px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring/20 text-foreground" />
               </div>
-              <input type="number" value={budget} onChange={e => setBudget(e.target.value)} placeholder="Budget ($)" className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring/20 text-foreground placeholder:text-muted-foreground" />
+              <input type="number" value={budget} onChange={e => setBudget(e.target.value)} placeholder="Budget (₹)" className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring/20 text-foreground placeholder:text-muted-foreground" />
               <div className="flex gap-2 items-center">
                 <span className="text-xs text-muted-foreground">Color:</span>
                 {tripColors.map(c => (
