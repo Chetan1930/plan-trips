@@ -27,6 +27,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (trips.length > 0 && !activeTripId) setActiveTripId(trips[0].id);
+    if (trips.length > 0 && activeTripId && !trips.find(t => t.id === activeTripId)) {
+      setActiveTripId(trips[0].id);
+    }
   }, [trips, activeTripId]);
 
   const { data: activities = [] } = useActivities(activeTripId);
