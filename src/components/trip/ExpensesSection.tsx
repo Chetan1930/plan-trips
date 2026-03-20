@@ -18,6 +18,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
 
   const total = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const budget = Number(trip?.budget || 0);
+  const fmt = (n: number) => n.toLocaleString('en-IN');
 
   const handleAdd = () => {
     if (!desc.trim() || !amount) return;
