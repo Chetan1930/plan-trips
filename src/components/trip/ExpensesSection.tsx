@@ -57,7 +57,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-secondary rounded-lg p-3 mb-3 overflow-hidden">
               <div className="flex gap-2 mb-2 flex-wrap">
                 <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Description" className="flex-1 min-w-[120px] px-2.5 py-1.5 text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground placeholder:text-muted-foreground" />
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount ($)" className="w-24 px-2.5 py-1.5 text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground placeholder:text-muted-foreground" />
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount (₹)" className="w-24 px-2.5 py-1.5 text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground placeholder:text-muted-foreground" />
                 <select value={category} onChange={e => setCategory(e.target.value)} className="px-2.5 py-1.5 text-xs bg-card border border-input rounded-md text-foreground">
                   {categories.map(c => <option key={c}>{c}</option>)}
                 </select>
