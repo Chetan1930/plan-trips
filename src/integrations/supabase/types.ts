@@ -260,6 +260,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_email: { Args: { _user_id: string }; Returns: string }
       is_trip_member: {
         Args: { _trip_id: string; _user_id: string }
         Returns: boolean
