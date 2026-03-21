@@ -59,6 +59,8 @@ export interface Comment {
   author_name: string;
   text: string;
   created_at: string;
+  attachment_url?: string | null;
+  attachment_type?: string | null;
 }
 
 export type NavSection = 'overview' | 'itinerary' | 'expenses' | 'checklists' | 'members' | 'comments' | 'invitations' | 'profile';

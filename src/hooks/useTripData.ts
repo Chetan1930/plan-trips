@@ -195,7 +195,7 @@ export function useComments(tripId: string | undefined) {
 export function useCreateComment() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (c: { trip_id: string; user_id: string; author_name: string; text: string }) => {
+    mutationFn: async (c: { trip_id: string; user_id: string; author_name: string; text: string; attachment_url?: string | null; attachment_type?: string | null }) => {
       const { error } = await supabase.from('comments').insert(c);
       if (error) throw error;
     },

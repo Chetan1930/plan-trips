@@ -108,6 +108,8 @@ export type Database = {
           text: string
           trip_id: string
           user_id: string
+          attachment_url: string | null
+          attachment_type: string | null
         }
         Insert: {
           author_name: string
@@ -116,6 +118,8 @@ export type Database = {
           text: string
           trip_id: string
           user_id: string
+          attachment_url?: string | null
+          attachment_type?: string | null
         }
         Update: {
           author_name?: string
@@ -124,6 +128,8 @@ export type Database = {
           text?: string
           trip_id?: string
           user_id?: string
+          attachment_url?: string | null
+          attachment_type?: string | null
         }
         Relationships: [
           {
