@@ -43,6 +43,7 @@ export interface ChecklistItem {
 export interface TripMember {
   id: string;
   trip_id: string;
+  user_id: string | null;
   name: string;
   email: string | null;
   role: string;
