@@ -19,6 +19,7 @@ const navItems: { key: NavSection; label: string; icon?: typeof LayoutGrid; emoj
   { key: 'checklists', label: 'Checklists', icon: CheckSquare },
   { key: 'members', label: 'Members', icon: Users },
   { key: 'comments', label: 'Comments', icon: MessageSquare },
+  { key: 'invitations', label: 'Invitations', icon: Mail },
 ];
 
 export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, setActiveTripId, onCreateTrip }: SidebarProps) {
