@@ -48,7 +48,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
   const { user } = useAuth();
   
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync with parent data
@@ -141,7 +141,6 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
         inputRef.current?.focus();
       },
       onError: (err: any) => {
-        // Show the ACTUAL database error to the user
         toast.error(err.message || 'Failed to send message');
         setIsUploading(false);
       }
@@ -155,12 +154,13 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="h-[calc(100vh-[120px])] md:h-[calc(100vh-120px)] flex flex-row gap-3 relative"
+      // Perfectly calculates remaining height: 100dvh - topbar(52px) - padding(16px*2 or 20px*2)
+      className="h-[calc(100dvh-84px)] md:h-[calc(100dvh-92px)] flex flex-row gap-3 relative w-full"
     >
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-card border border-border rounded-xl overflow-hidden relative z-10">
+      <div className="flex-1 flex flex-col bg-card border border-border rounded-xl shadow-sm overflow-hidden relative z-10">
         {/* Chat Header */}
-        <div className="px-3 md:px-4 py-3 border-b border-border flex items-center justify-between shrink-0">
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between shrink-0 bg-card">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
               <Hash className="w-4 h-4 text-primary" />
@@ -183,7 +183,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 md:px-4 py-3 space-y-1">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 md:px-4 py-3 space-y-1 bg-muted/10">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-12">
               <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
@@ -244,10 +244,10 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
                           </div>
                         )}
                         <div
-                          className={`flex flex-col gap-1.5 px-3.5 py-2 text-[13px] leading-relaxed rounded-2xl break-words
+                          className={`flex flex-col gap-1.5 px-3.5 py-2 text-[13px] leading-relaxed rounded-2xl break-words shadow-sm
                             ${isOwn
-                              ? 'bg-primary text-primary-foreground rounded-tr-md'
-                              : 'bg-secondary text-foreground rounded-tl-md'
+                              ? 'bg-primary text-primary-foreground rounded-tr-sm'
+                              : 'bg-card border border-border text-foreground rounded-tl-sm'
                             }
                             ${isConsecutive && isOwn ? 'rounded-tr-2xl' : ''}
                             ${isConsecutive && !isOwn ? 'rounded-tl-2xl' : ''}
@@ -293,8 +293,8 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
           )}
         </div>
 
-        {/* Input */}
-        <div className="px-3 md:px-4 py-3 border-t border-border shrink-0 bg-card">
+        {/* Input Area */}
+        <div className="p-3 md:p-4 bg-card border-t border-border shrink-0 mt-auto">
           {/* File Preview before upload */}
           <AnimatePresence>
             {selectedFile && (
@@ -302,9 +302,9 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mb-2"
+                className="mb-3"
               >
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-lg text-xs border border-border">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-background rounded-lg text-xs border border-border shadow-sm">
                   {selectedFile.type.startsWith('image/') ? (
                     <div className="w-6 h-6 rounded bg-muted overflow-hidden">
                       <img src={URL.createObjectURL(selectedFile)} alt="preview" className="w-full h-full object-cover" />
@@ -324,7 +324,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
             )}
           </AnimatePresence>
 
-          <div className="flex items-end gap-2 bg-secondary rounded-xl pl-2 pr-1.5 py-1.5 border border-transparent focus-within:border-border transition-colors">
+          <div className="flex items-end gap-2 bg-background border border-input rounded-[24px] pl-3 pr-2 py-1.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all shadow-sm">
             <input 
               type="file" 
               ref={fileInputRef} 
@@ -335,9 +335,9 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:opacity-50 shrink-0 mb-[3px]"
+              className="w-8 h-8 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:opacity-50 shrink-0 mb-0.5"
             >
-              <Paperclip className="w-5 h-5 sm:w-4 sm:h-4" />
+              <Paperclip className="w-4 h-4" />
             </button>
 
             <textarea
@@ -350,15 +350,15 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
                   handlePost();
                 }
               }}
-              placeholder="Message..."
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none py-2 min-h-[36px] max-h-[100px] resize-none overflow-y-auto leading-relaxed"
+              placeholder="Type a message..."
+              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none py-2 min-h-[40px] max-h-[120px] resize-none overflow-y-auto leading-relaxed"
               rows={1}
             />
             
             <button
               onClick={handlePost}
               disabled={(!text.trim() && !selectedFile) || isUploading}
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-30 shrink-0 mb-[1px]"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:opacity-90 transition-all disabled:opacity-30 disabled:scale-95 shrink-0 mb-[1px]"
             >
               {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-0.5" />}
             </button>
@@ -386,7 +386,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="absolute right-0 top-0 bottom-0 w-[240px] z-30 md:relative bg-card border-l border-border rounded-r-xl md:rounded-xl overflow-hidden shrink-0 shadow-2xl md:shadow-none"
+            className="absolute right-0 top-0 bottom-0 w-[240px] z-30 md:relative bg-card border-l border-border rounded-r-xl md:rounded-xl overflow-hidden shrink-0 shadow-2xl md:shadow-sm"
           >
             <div className="p-3 border-b border-border flex justify-between items-center">
               <p className="text-xs font-semibold text-foreground">Members</p>
