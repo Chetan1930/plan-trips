@@ -60,4 +60,4 @@ export interface Comment {
   created_at: string;
 }
 
-export type NavSection = 'overview' | 'itinerary' | 'expenses' | 'checklists' | 'members' | 'comments';
+export type NavSection = 'overview' | 'itinerary' | 'expenses' | 'checklists' | 'members' | 'comments' | 'invitations';

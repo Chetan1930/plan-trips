@@ -8,12 +8,13 @@ import ExpensesSection from '@/components/trip/ExpensesSection';
 import ChecklistsSection from '@/components/trip/ChecklistsSection';
 import MembersSection from '@/components/trip/MembersSection';
 import CommentsSection from '@/components/trip/CommentsSection';
+import InvitationsSection from '@/components/trip/InvitationsSection';
 import CreateTripDialog from '@/components/trip/CreateTripDialog';
 import type { NavSection } from '@/lib/types';
 
 const navTitles: Record<NavSection, string> = {
   overview: 'Overview', itinerary: 'Itinerary', expenses: 'Expenses',
-  checklists: 'Checklists', members: 'Members', comments: 'Comments',
+  checklists: 'Checklists', members: 'Members', comments: 'Comments', invitations: 'Invitations',
 };
 
 export default function Dashboard() {
@@ -65,7 +66,9 @@ export default function Dashboard() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-5">
-          {!activeTripId ? (
+          {activeNav === 'invitations' ? (
+            <InvitationsSection />
+          ) : !activeTripId ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <p className="text-muted-foreground text-sm mb-3">No trips yet. Create your first one!</p>
               <button
