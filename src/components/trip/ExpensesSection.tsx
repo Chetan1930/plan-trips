@@ -1,19 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Expense, Trip } from '@/lib/types';
+import type { Expense, Trip, TripMember } from '@/lib/types';
 import { useCreateExpense } from '@/hooks/useTripData';
+import { useAuth } from '@/hooks/useAuth';
 
 const catEmojis: Record<string, string> = { Accommodation: '🏨', Food: '🍜', Transport: '🚗', Activities: '🎭', Shopping: '🛍', Other: '📦' };
 const categories = Object.keys(catEmojis);
 
-interface Props { tripId: string; expenses: Expense[]; trip: Trip | undefined; }
+interface Props { tripId: string; expenses: Expense[]; trip: Trip | undefined; members: TripMember[]; }
 
-export default function ExpensesSection({ tripId, expenses, trip }: Props) {
+export default function ExpensesSection({ tripId, expenses, trip, members }: Props) {
+  const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [desc, setDesc] = useState('');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('Other');
+  
+  // Try to find the current user's member profile to set as default payer
+  const currentMember = members.find(m => m.user_id === user?.id);
+  const defaultPayer = currentMember?.name || user?.user_metadata?.name || 'You';
+  const [paidBy, setPaidBy] = useState(defaultPayer);
+
+  useEffect(() => {
+    if (!paidBy || paidBy === 'You') {
+      setPaidBy(defaultPayer);
+    }
+  }, [defaultPayer, paidBy]);
+
   const createExpense = useCreateExpense();
 
   const total = expenses.reduce((s, e) => s + Number(e.amount), 0);
@@ -22,7 +36,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
 
   const handleAdd = () => {
     if (!desc.trim() || !amount) return;
-    createExpense.mutate({ trip_id: tripId, description: desc.trim(), category, amount: parseFloat(amount), paid_by: 'You' });
+    createExpense.mutate({ trip_id: tripId, description: desc.trim(), category, amount: parseFloat(amount), paid_by: paidBy });
     setDesc(''); setAmount(''); setCategory('Other'); setShowForm(false);
   };
 
@@ -62,6 +76,10 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
                 <select value={category} onChange={e => setCategory(e.target.value)} className="px-2.5 py-1.5 text-xs bg-card border border-input rounded-md text-foreground">
                   {categories.map(c => <option key={c}>{c}</option>)}
                 </select>
+                <select value={paidBy} onChange={e => setPaidBy(e.target.value)} className="px-2.5 py-1.5 text-xs bg-card border border-input rounded-md text-foreground min-w-[100px]">
+                  {members.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
+                  {!members.some(m => m.name === paidBy) && <option value={paidBy}>{paidBy}</option>}
+                </select>
               </div>
               <div className="flex gap-2">
                 <button onClick={handleAdd} className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90">Save</button>
@@ -78,7 +96,7 @@ export default function ExpensesSection({ tripId, expenses, trip }: Props) {
             </div>
             <div className="flex-1">
               <p className="text-[13px] font-medium text-foreground">{e.description}</p>
-              <p className="text-[11px] text-muted-foreground">{e.category} · {e.paid_by}</p>
+              <p className="text-[11px] text-muted-foreground">{e.category} · Paid by {e.paid_by}</p>
             </div>
             <p className="text-sm font-medium text-foreground tabular-nums">₹{Number(e.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
           </div>

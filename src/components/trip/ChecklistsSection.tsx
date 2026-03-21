@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Check, Plus } from 'lucide-react';
+import { Check, Plus, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { ChecklistItem } from '@/lib/types';
 import { useCreateChecklistItem, useToggleChecklistItem } from '@/hooks/useTripData';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Props { tripId: string; checklist: ChecklistItem[]; packing: ChecklistItem[]; }
 
@@ -19,11 +20,18 @@ function ChecklistCard({ title, listType, tripId, items }: { title: string; list
   const [newItem, setNewItem] = useState('');
   const createItem = useCreateChecklistItem();
   const toggleItem = useToggleChecklistItem();
+  const { user } = useAuth();
   const done = items.filter(i => i.is_done).length;
 
   const handleAdd = () => {
     if (!newItem.trim()) return;
-    createItem.mutate({ trip_id: tripId, text: newItem.trim(), list_type: listType });
+    const addedBy = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Unknown';
+    createItem.mutate({ 
+      trip_id: tripId, 
+      text: newItem.trim(), 
+      list_type: listType,
+      added_by: addedBy
+    });
     setNewItem('');
   };
 
@@ -34,18 +42,34 @@ function ChecklistCard({ title, listType, tripId, items }: { title: string; list
         <span className="text-[11px] text-muted-foreground">{done} of {items.length} done</span>
       </div>
       {items.map(item => (
-        <div key={item.id} className="flex items-center gap-2.5 py-2 border-b border-border last:border-0">
-          <button
-            onClick={() => toggleItem.mutate({ id: item.id, is_done: !item.is_done })}
-            className={`w-4 h-4 rounded shrink-0 border flex items-center justify-center transition-colors
-              ${item.is_done ? 'bg-primary border-primary' : 'border-input hover:border-primary/50'}`}
-          >
-            {item.is_done && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
-          </button>
-          <span className={`text-[13px] flex-1 ${item.is_done ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
-            {item.text}
-          </span>
-          {item.assigned_to && <span className="text-[10px] bg-secondary text-muted-foreground rounded-full px-1.5 py-0.5">{item.assigned_to}</span>}
+        <div key={item.id} className="flex flex-col gap-1.5 py-2.5 border-b border-border last:border-0">
+          <div className="flex items-start gap-2.5">
+            <button
+              onClick={() => toggleItem.mutate({ id: item.id, is_done: !item.is_done })}
+              className={`w-4 h-4 mt-0.5 rounded shrink-0 border flex items-center justify-center transition-colors
+                ${item.is_done ? 'bg-primary border-primary' : 'border-input hover:border-primary/50'}`}
+            >
+              {item.is_done && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+            </button>
+            <div className="flex-1">
+              <span className={`text-[13px] block ${item.is_done ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+                {item.text}
+              </span>
+              <div className="flex items-center gap-3 mt-1.5">
+                {item.added_by && (
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground bg-secondary/60 px-1.5 py-0.5 rounded-sm">
+                    <User className="w-2.5 h-2.5" />
+                    <span>Added by {item.added_by}</span>
+                  </div>
+                )}
+                {item.assigned_to && (
+                  <span className="text-[10px] bg-secondary text-muted-foreground rounded-sm px-1.5 py-0.5">
+                    Assigned to: {item.assigned_to}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       ))}
       <div className="flex gap-2 mt-3">

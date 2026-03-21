@@ -136,7 +136,7 @@ export function useChecklistItems(tripId: string | undefined, listType: string) 
 export function useCreateChecklistItem() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (item: { trip_id: string; text: string; list_type: string; assigned_to?: string }) => {
+    mutationFn: async (item: { trip_id: string; text: string; list_type: string; assigned_to?: string; added_by?: string }) => {
       const { error } = await supabase.from('checklist_items').insert(item);
       if (error) throw error;
     },

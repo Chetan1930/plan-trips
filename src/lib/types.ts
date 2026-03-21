@@ -38,6 +38,7 @@ export interface ChecklistItem {
   is_done: boolean;
   list_type: string;
   assigned_to: string | null;
+  added_by?: string | null;
 }
 
 export interface TripMember {
@@ -60,4 +61,4 @@ export interface Comment {
   created_at: string;
 }
 
-export type NavSection = 'overview' | 'itinerary' | 'expenses' | 'checklists' | 'members' | 'comments' | 'invitations';
+export type NavSection = 'overview' | 'itinerary' | 'expenses' | 'checklists' | 'members' | 'comments' | 'invitations' | 'profile';
