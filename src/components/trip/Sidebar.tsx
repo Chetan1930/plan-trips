@@ -1,4 +1,4 @@
-import { MapPin, LayoutGrid, Calendar, CheckSquare, Users, MessageSquare, Plus, LogOut } from 'lucide-react';
+import { MapPin, LayoutGrid, Calendar, CheckSquare, Users, MessageSquare, Plus, LogOut, Mail } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import type { NavSection, Trip } from '@/lib/types';
 import { motion } from 'framer-motion';
