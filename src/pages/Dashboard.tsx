@@ -14,7 +14,7 @@ import type { NavSection } from '@/lib/types';
 
 const navTitles: Record<NavSection, string> = {
   overview: 'Overview', itinerary: 'Itinerary', expenses: 'Expenses',
-  checklists: 'Checklists', members: 'Members', comments: 'Comments',
+  checklists: 'Checklists', members: 'Members', comments: 'Comments', invitations: 'Invitations',
 };
 
 export default function Dashboard() {
