@@ -8,6 +8,7 @@ import ExpensesSection from '@/components/trip/ExpensesSection';
 import ChecklistsSection from '@/components/trip/ChecklistsSection';
 import MembersSection from '@/components/trip/MembersSection';
 import CommentsSection from '@/components/trip/CommentsSection';
+import InvitationsSection from '@/components/trip/InvitationsSection';
 import CreateTripDialog from '@/components/trip/CreateTripDialog';
 import type { NavSection } from '@/lib/types';
 
