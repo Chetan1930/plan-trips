@@ -9,12 +9,13 @@ import ChecklistsSection from '@/components/trip/ChecklistsSection';
 import MembersSection from '@/components/trip/MembersSection';
 import CommentsSection from '@/components/trip/CommentsSection';
 import InvitationsSection from '@/components/trip/InvitationsSection';
+import ProfileSection from '@/components/trip/ProfileSection';
 import CreateTripDialog from '@/components/trip/CreateTripDialog';
 import type { NavSection } from '@/lib/types';
 
 const navTitles: Record<NavSection, string> = {
   overview: 'Overview', itinerary: 'Itinerary', expenses: 'Expenses',
-  checklists: 'Checklists', members: 'Members', comments: 'Comments', invitations: 'Invitations',
+  checklists: 'Checklists', members: 'Members', comments: 'Comments', invitations: 'Invitations', profile: 'Your Profile'
 };
 
 export default function Dashboard() {
@@ -56,7 +57,7 @@ export default function Dashboard() {
         <div className="bg-card border-b border-border px-5 h-[52px] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-[15px] font-medium text-foreground">{navTitles[activeNav]}</span>
-            {activeTrip && (
+            {activeTrip && activeNav !== 'profile' && activeNav !== 'invitations' && (
               <span className="text-[11px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-medium">
                 {activeTrip.name}
               </span>
@@ -68,6 +69,8 @@ export default function Dashboard() {
         <div className="flex-1 overflow-y-auto p-5">
           {activeNav === 'invitations' ? (
             <InvitationsSection />
+          ) : activeNav === 'profile' ? (
+            <ProfileSection />
           ) : !activeTripId ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <p className="text-muted-foreground text-sm mb-3">No trips yet. Create your first one!</p>
