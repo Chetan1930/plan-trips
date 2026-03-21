@@ -66,7 +66,9 @@ export default function Dashboard() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-5">
-          {!activeTripId ? (
+          {activeNav === 'invitations' ? (
+            <InvitationsSection />
+          ) : !activeTripId ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <p className="text-muted-foreground text-sm mb-3">No trips yet. Create your first one!</p>
               <button
@@ -84,7 +86,6 @@ export default function Dashboard() {
               {activeNav === 'checklists' && <ChecklistsSection tripId={activeTripId} checklist={checklist} packing={packing} />}
               {activeNav === 'members' && <MembersSection tripId={activeTripId} members={members} />}
               {activeNav === 'comments' && <CommentsSection tripId={activeTripId} comments={comments} members={members} />}
-              {activeNav === 'invitations' && <InvitationsSection />}
             </>
           )}
         </div>
