@@ -82,7 +82,7 @@ export default function Dashboard() {
               {activeNav === 'expenses' && <ExpensesSection tripId={activeTripId} expenses={expenses} trip={activeTrip} />}
               {activeNav === 'checklists' && <ChecklistsSection tripId={activeTripId} checklist={checklist} packing={packing} />}
               {activeNav === 'members' && <MembersSection tripId={activeTripId} members={members} />}
-              {activeNav === 'comments' && <CommentsSection tripId={activeTripId} comments={comments} />}
+              {activeNav === 'comments' && <CommentsSection tripId={activeTripId} comments={comments} members={members} />}
             </>
           )}
         </div>
