@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, Users, SmilePlus, Hash, Paperclip, X, FileIcon, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatDistanceToNow, format, isToday, isYesterday } from 'date-fns';
+import { format, isToday, isYesterday } from 'date-fns';
 import type { Comment, TripMember } from '@/lib/types';
 import { useCreateComment } from '@/hooks/useTripData';
 import { useAuth } from '@/hooks/useAuth';
@@ -154,12 +154,12 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="h-[calc(100vh-120px)] flex gap-3"
+      className="h-[calc(100vh-[120px])] md:h-[calc(100vh-120px)] flex flex-row gap-3 relative"
     >
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-card border border-border rounded-xl overflow-hidden relative">
+      <div className="flex-1 flex flex-col bg-card border border-border rounded-xl overflow-hidden relative z-10">
         {/* Chat Header */}
-        <div className="px-4 py-3 border-b border-border flex items-center justify-between shrink-0">
+        <div className="px-3 md:px-4 py-3 border-b border-border flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
               <Hash className="w-4 h-4 text-primary" />
@@ -167,7 +167,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
             <div>
               <p className="text-sm font-semibold text-foreground">Trip Discussion</p>
               <p className="text-[11px] text-muted-foreground">
-                {members.length} member{members.length !== 1 ? 's' : ''} · {messages.length} message{messages.length !== 1 ? 's' : ''}
+                {members.length} member{members.length !== 1 ? 's' : ''}
               </p>
             </div>
           </div>
@@ -176,13 +176,13 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors
               ${showMembers ? 'bg-primary/10 text-primary' : 'hover:bg-muted text-muted-foreground'}`}
           >
-            <Users className="w-3.5 h-3.5" />
+            <Users className="w-4 h-4 md:w-3.5 md:h-3.5" />
             <span className="hidden sm:inline">{members.length}</span>
           </button>
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 md:px-4 py-3 space-y-1">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-12">
               <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
@@ -233,7 +233,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
                       )}
 
                       {/* Bubble */}
-                      <div className={`max-w-[75%] ${isOwn ? 'items-end' : 'items-start'}`}>
+                      <div className={`max-w-[85%] sm:max-w-[75%] ${isOwn ? 'items-end' : 'items-start'}`}>
                         {!isConsecutive && (
                           <div className={`flex items-baseline gap-2 mb-0.5 ${isOwn ? 'flex-row-reverse' : ''}`}>
                             <span className="text-xs font-semibold text-foreground">{msg.author_name}</span>
@@ -243,7 +243,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
                           </div>
                         )}
                         <div
-                          className={`flex flex-col gap-1.5 px-3.5 py-2 text-[13px] leading-relaxed rounded-2xl
+                          className={`flex flex-col gap-1.5 px-3.5 py-2 text-[13px] leading-relaxed rounded-2xl break-words
                             ${isOwn
                               ? 'bg-primary text-primary-foreground rounded-tr-md'
                               : 'bg-secondary text-foreground rounded-tl-md'
@@ -259,7 +259,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
                                   <img 
                                     src={msg.attachment_url} 
                                     alt="attachment" 
-                                    className="max-w-[200px] sm:max-w-[280px] max-h-[200px] rounded-lg object-cover bg-black/10" 
+                                    className="max-w-full sm:max-w-[280px] max-h-[200px] rounded-lg object-cover bg-black/10" 
                                   />
                                 </a>
                               ) : (
@@ -293,7 +293,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 border-t border-border shrink-0 bg-card">
+        <div className="px-3 md:px-4 py-3 border-t border-border shrink-0 bg-card">
           {/* File Preview before upload */}
           <AnimatePresence>
             {selectedFile && (
@@ -324,8 +324,6 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
           </AnimatePresence>
 
           <div className="flex items-end gap-2 bg-secondary rounded-xl pl-2 pr-1.5 py-1.5 border border-transparent focus-within:border-border transition-colors">
-            
-            {/* Attachment Button */}
             <input 
               type="file" 
               ref={fileInputRef} 
@@ -338,7 +336,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
               disabled={isUploading}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:opacity-50 shrink-0 mb-[3px]"
             >
-              <Paperclip className="w-4 h-4" />
+              <Paperclip className="w-5 h-5 sm:w-4 sm:h-4" />
             </button>
 
             <textarea
@@ -351,8 +349,8 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
                   handlePost();
                 }
               }}
-              placeholder="Type a message..."
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none py-2 min-h-[36px] max-h-[120px] resize-none overflow-y-auto leading-relaxed"
+              placeholder="Message..."
+              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none py-2 min-h-[36px] max-h-[100px] resize-none overflow-y-auto leading-relaxed"
               rows={1}
             />
             
@@ -367,17 +365,33 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
         </div>
       </div>
 
-      {/* Members Sidebar */}
+      {/* Mobile background overlay when members drawer is open */}
+      <AnimatePresence>
+        {showMembers && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="md:hidden absolute inset-0 bg-background/50 backdrop-blur-sm z-20 rounded-xl"
+            onClick={() => setShowMembers(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Members Sidebar (Floating on Mobile) */}
       <AnimatePresence>
         {showMembers && (
           <motion.div
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: 240 }}
-            exit={{ opacity: 0, width: 0 }}
-            className="bg-card border border-border rounded-xl overflow-hidden shrink-0"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            className="absolute right-0 top-0 bottom-0 w-[240px] z-30 md:relative bg-card border-l border-border rounded-r-xl md:rounded-xl overflow-hidden shrink-0 shadow-2xl md:shadow-none"
           >
-            <div className="p-3 border-b border-border">
+            <div className="p-3 border-b border-border flex justify-between items-center">
               <p className="text-xs font-semibold text-foreground">Members</p>
+              <button className="md:hidden p-1 rounded-md hover:bg-muted text-muted-foreground" onClick={() => setShowMembers(false)}>
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
             <ScrollArea className="h-[calc(100%-44px)]">
               <div className="p-2 space-y-0.5">
