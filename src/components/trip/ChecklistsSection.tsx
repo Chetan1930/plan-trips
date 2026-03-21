@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Check, Plus, User } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import type { ChecklistItem } from '@/lib/types';
 import { useCreateChecklistItem, useToggleChecklistItem } from '@/hooks/useTripData';
 import { useAuth } from '@/hooks/useAuth';
@@ -26,13 +27,27 @@ function ChecklistCard({ title, listType, tripId, items }: { title: string; list
   const handleAdd = () => {
     if (!newItem.trim()) return;
     const addedBy = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Unknown';
-    createItem.mutate({ 
-      trip_id: tripId, 
-      text: newItem.trim(), 
-      list_type: listType,
-      added_by: addedBy
-    });
-    setNewItem('');
+    createItem.mutate(
+      { 
+        trip_id: tripId, 
+        text: newItem.trim(), 
+        list_type: listType,
+        added_by: addedBy
+      },
+      {
+        onSuccess: () => setNewItem(''),
+        onError: (err: any) => toast.error(err.message || 'Failed to add item')
+      }
+    );
+  };
+
+  const handleToggle = (item: ChecklistItem) => {
+    toggleItem.mutate(
+      { id: item.id, is_done: !item.is_done },
+      {
+        onError: (err: any) => toast.error(err.message || 'Failed to update item')
+      }
+    );
   };
 
   return (
@@ -46,7 +61,7 @@ function ChecklistCard({ title, listType, tripId, items }: { title: string; list
           <div key={item.id} className="flex flex-col gap-1.5 py-2.5 border-b border-border/50 last:border-0">
             <div className="flex items-start gap-3">
               <button
-                onClick={() => toggleItem.mutate({ id: item.id, is_done: !item.is_done })}
+                onClick={() => handleToggle(item)}
                 className={`w-5 h-5 sm:w-4 sm:h-4 mt-0.5 rounded shrink-0 border flex items-center justify-center transition-colors
                   ${item.is_done ? 'bg-primary border-primary' : 'border-input hover:border-primary/50'}`}
               >
@@ -82,7 +97,11 @@ function ChecklistCard({ title, listType, tripId, items }: { title: string; list
           placeholder="Add new item..."
           className="w-full sm:flex-1 px-3 py-2 text-sm sm:text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground placeholder:text-muted-foreground"
         />
-        <button onClick={handleAdd} className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 sm:py-1.5 text-sm sm:text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity">
+        <button 
+          onClick={handleAdd} 
+          disabled={createItem.isPending}
+          className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 sm:py-1.5 text-sm sm:text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
           <Plus className="w-4 h-4 sm:w-3 sm:h-3" /> Add Item
         </button>
       </div>

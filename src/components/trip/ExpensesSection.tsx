@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import type { Expense, Trip, TripMember } from '@/lib/types';
 import { useCreateExpense } from '@/hooks/useTripData';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,7 +18,6 @@ export default function ExpensesSection({ tripId, expenses, trip, members }: Pro
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('Other');
   
-  // Try to find the current user's member profile to set as default payer
   const currentMember = members.find(m => m.user_id === user?.id);
   const defaultPayer = currentMember?.name || user?.user_metadata?.name || 'You';
   const [paidBy, setPaidBy] = useState(defaultPayer);
@@ -36,8 +36,18 @@ export default function ExpensesSection({ tripId, expenses, trip, members }: Pro
 
   const handleAdd = () => {
     if (!desc.trim() || !amount) return;
-    createExpense.mutate({ trip_id: tripId, description: desc.trim(), category, amount: parseFloat(amount), paid_by: paidBy });
-    setDesc(''); setAmount(''); setCategory('Other'); setShowForm(false);
+    createExpense.mutate(
+      { trip_id: tripId, description: desc.trim(), category, amount: parseFloat(amount), paid_by: paidBy },
+      {
+        onSuccess: () => {
+          setDesc(''); setAmount(''); setCategory('Other'); setShowForm(false);
+          toast.success('Expense added');
+        },
+        onError: (err: any) => {
+          toast.error(err.message || 'Failed to add expense');
+        }
+      }
+    );
   };
 
   return (
@@ -84,7 +94,7 @@ export default function ExpensesSection({ tripId, expenses, trip, members }: Pro
                 </select>
               </div>
               <div className="flex gap-2">
-                <button onClick={handleAdd} className="flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-sm sm:text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90">Save Expense</button>
+                <button onClick={handleAdd} disabled={createExpense.isPending} className="flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-sm sm:text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90 disabled:opacity-50">Save Expense</button>
                 <button onClick={() => setShowForm(false)} className="flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-sm sm:text-xs font-medium bg-card border border-input rounded-md hover:bg-muted text-foreground">Cancel</button>
               </div>
             </motion.div>

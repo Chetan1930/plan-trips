@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import type { Activity } from '@/lib/types';
 import { useCreateActivity, useDeleteActivity } from '@/hooks/useTripData';
 
@@ -29,17 +30,33 @@ export default function ItinerarySection({ tripId, activities }: Props) {
 
   const handleAdd = () => {
     if (!title.trim()) return;
-    createActivity.mutate({
-      trip_id: tripId,
-      title: title.trim(),
-      location: location || undefined,
-      activity_date: date || undefined,
-      start_time: startTime || undefined,
-      end_time: endTime || undefined,
-    });
-    setTitle(''); setLocation(''); setDate(''); setStartTime(''); setEndTime('');
-    setShowForm(false);
+    createActivity.mutate(
+      {
+        trip_id: tripId,
+        title: title.trim(),
+        location: location || undefined,
+        activity_date: date || undefined,
+        start_time: startTime || undefined,
+        end_time: endTime || undefined,
+      },
+      {
+        onSuccess: () => {
+          setTitle(''); setLocation(''); setDate(''); setStartTime(''); setEndTime('');
+          setShowForm(false);
+          toast.success('Activity added');
+        },
+        onError: (err: any) => {
+          toast.error(err.message || 'Failed to add activity');
+        }
+      }
+    );
   };
+
+  const handleDelete = (id: string) => {
+    deleteActivity.mutate(id, {
+      onError: (err: any) => toast.error(err.message || 'Failed to delete activity')
+    });
+  }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
@@ -68,7 +85,7 @@ export default function ItinerarySection({ tripId, activities }: Props) {
               </div>
             </div>
             <div className="flex gap-2">
-              <button onClick={handleAdd} className="flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-sm sm:text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90">Save Activity</button>
+              <button onClick={handleAdd} disabled={createActivity.isPending} className="flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-sm sm:text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90 disabled:opacity-50">Save Activity</button>
               <button onClick={() => setShowForm(false)} className="flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-sm sm:text-xs font-medium bg-card border border-input text-foreground rounded-md hover:bg-muted">Cancel</button>
             </div>
           </motion.div>
@@ -95,7 +112,7 @@ export default function ItinerarySection({ tripId, activities }: Props) {
                     {a.location && <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{a.location}</p>}
                   </div>
                   <button
-                    onClick={() => deleteActivity.mutate(a.id)}
+                    onClick={() => handleDelete(a.id)}
                     className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-1"
                   >
                     <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
@@ -117,5 +134,3 @@ export default function ItinerarySection({ tripId, activities }: Props) {
     </motion.div>
   );
 }
-
-import { Calendar } from 'lucide-react';
