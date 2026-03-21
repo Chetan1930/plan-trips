@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Send, Users, SmilePlus, Hash, Paperclip, X, FileIcon, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, isToday, isYesterday } from 'date-fns';
-import type { Comment, TripMember } from '@/lib/types';
+import type { Comment, TripMember, Trip } from '@/lib/types';
 import { useCreateComment } from '@/hooks/useTripData';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +13,7 @@ interface Props {
   tripId: string;
   comments: Comment[];
   members: TripMember[];
+  trip?: Trip;
 }
 
 function getDateLabel(dateStr: string) {
@@ -37,7 +38,7 @@ function groupByDate(comments: Comment[]) {
   return groups;
 }
 
-export default function CommentsSection({ tripId, comments: initialComments, members }: Props) {
+export default function CommentsSection({ tripId, comments: initialComments, members, trip }: Props) {
   const [text, setText] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -166,7 +167,7 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
               <Hash className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">Trip Discussion</p>
+              <p className="text-sm font-semibold text-foreground">{trip?.name || 'Trip Discussion'}</p>
               <p className="text-[11px] text-muted-foreground">
                 {members.length} member{members.length !== 1 ? 's' : ''}
               </p>
