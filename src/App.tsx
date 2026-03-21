@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -29,18 +30,20 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
-            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <AuthProvider>
+        <TooltipProvider>
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
+              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

@@ -12,6 +12,7 @@ import CommentsSection from '@/components/trip/CommentsSection';
 import InvitationsSection from '@/components/trip/InvitationsSection';
 import ProfileSection from '@/components/trip/ProfileSection';
 import CreateTripDialog from '@/components/trip/CreateTripDialog';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import type { NavSection } from '@/lib/types';
 
 const navTitles: Record<NavSection, string> = {
@@ -82,6 +83,10 @@ export default function Dashboard() {
                 {activeTrip.name}
               </span>
             )}
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
           </div>
         </div>
 
