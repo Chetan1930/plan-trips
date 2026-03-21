@@ -10,6 +10,7 @@ interface SidebarProps {
   activeTripId: string | undefined;
   setActiveTripId: (id: string) => void;
   onCreateTrip: () => void;
+  onNavClick?: () => void;
 }
 
 const navItems: { key: NavSection; label: string; icon?: typeof LayoutGrid; emoji?: string }[] = [
@@ -22,14 +23,27 @@ const navItems: { key: NavSection; label: string; icon?: typeof LayoutGrid; emoj
   { key: 'invitations', label: 'Invitations', icon: Mail },
 ];
 
-export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, setActiveTripId, onCreateTrip }: SidebarProps) {
+export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, setActiveTripId, onCreateTrip, onNavClick }: SidebarProps) {
   const { user, signOut } = useAuth();
 
   const displayName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
   const initial = displayName[0]?.toUpperCase() || 'U';
 
+  const handleNav = (key: NavSection) => {
+    setActiveNav(key);
+    onNavClick?.();
+  };
+
+  const handleTrip = (id: string) => {
+    setActiveTripId(id);
+    if (activeNav === 'profile' || activeNav === 'invitations') {
+      setActiveNav('overview');
+    }
+    onNavClick?.();
+  };
+
   return (
-    <div className="w-[220px] bg-sidebar border-r border-sidebar-border flex flex-col shrink-0 h-full">
+    <div className="w-[240px] md:w-[220px] bg-sidebar border-r border-sidebar-border flex flex-col shrink-0 h-full shadow-2xl md:shadow-none">
       {/* Logo */}
       <div className="px-4 py-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
@@ -46,8 +60,8 @@ export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, 
         {navItems.map(({ key, label, icon: Icon, emoji }) => (
           <button
             key={key}
-            onClick={() => setActiveNav(key)}
-            className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors mb-0.5
+            onClick={() => handleNav(key)}
+            className={`w-full flex items-center gap-2 px-2 py-2 md:py-1.5 rounded-md text-[13px] transition-colors mb-0.5
               ${activeNav === key ? 'bg-accent text-accent-foreground font-medium' : 'text-sidebar-foreground hover:bg-muted hover:text-foreground'}`}
           >
             {Icon ? <Icon className="w-[15px] h-[15px] shrink-0 opacity-70" /> : <span className="w-[15px] h-[15px] shrink-0 flex items-center justify-center text-xs font-semibold opacity-70">{emoji}</span>}
@@ -59,13 +73,8 @@ export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, 
         {trips.map(trip => (
           <button
             key={trip.id}
-            onClick={() => {
-              setActiveTripId(trip.id);
-              if (activeNav === 'profile' || activeNav === 'invitations') {
-                setActiveNav('overview');
-              }
-            }}
-            className={`w-full flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs transition-colors
+            onClick={() => handleTrip(trip.id)}
+            className={`w-full flex items-center gap-1.5 px-2 py-2 md:py-1.5 rounded-md text-xs transition-colors
               ${activeTripId === trip.id && activeNav !== 'profile' && activeNav !== 'invitations' ? 'bg-accent text-accent-foreground font-medium' : 'text-sidebar-foreground hover:bg-muted'}`}
           >
             <div className="w-2 h-2 rounded-full shrink-0" style={{ background: trip.color }} />
@@ -73,8 +82,8 @@ export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, 
           </button>
         ))}
         <button
-          onClick={onCreateTrip}
-          className="w-full flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mt-0.5"
+          onClick={() => { onCreateTrip(); onNavClick?.(); }}
+          className="w-full flex items-center gap-1.5 px-2 py-2 md:py-1.5 rounded-md text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mt-0.5"
         >
           <Plus className="w-3 h-3" />
           New trip
@@ -83,10 +92,10 @@ export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, 
 
       {/* Footer / Profile */}
       <div 
-        onClick={() => setActiveNav('profile')}
-        className={`px-3 py-3 border-t border-sidebar-border flex items-center gap-2 cursor-pointer transition-colors ${activeNav === 'profile' ? 'bg-muted' : 'hover:bg-muted/50'}`}
+        onClick={() => handleNav('profile')}
+        className={`px-3 py-3 md:py-3 border-t border-sidebar-border flex items-center gap-2 cursor-pointer transition-colors ${activeNav === 'profile' ? 'bg-muted' : 'hover:bg-muted/50'}`}
       >
-        <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[11px] font-medium shrink-0">
+        <div className="w-8 h-8 md:w-7 md:h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[11px] font-medium shrink-0">
           {initial}
         </div>
         <div className="flex-1 min-w-0">
@@ -101,7 +110,7 @@ export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, 
           className="text-muted-foreground hover:text-foreground transition-colors p-1"
           title="Sign out"
         >
-          <LogOut className="w-3.5 h-3.5" />
+          <LogOut className="w-4 h-4 md:w-3.5 md:h-3.5" />
         </button>
       </div>
     </div>

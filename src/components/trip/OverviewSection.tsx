@@ -49,7 +49,7 @@ export default function OverviewSection({ trip, activities, expenses, checklist,
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 md:space-y-3">
       {/* Admin controls */}
       {isAdmin && (
         <div className="flex items-center justify-end gap-2">
@@ -62,20 +62,20 @@ export default function OverviewSection({ trip, activities, expenses, checklist,
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Metric label="Destination" value={trip.destination} />
         <Metric label="Duration" value={days ? `${days} days` : '—'} sub={dateRange} />
         <Metric label="Total Budget" value={`₹${Number(trip.budget).toLocaleString('en-IN')}`} sub={`₹${totalSpent.toLocaleString('en-IN')} spent`} />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <MetricProgress label="Activities planned" value={activities.length} max={Math.max(activities.length, 1)} />
         <MetricProgress label="Checklist progress" value={checkDone} max={Math.max(checklist.length, 1)} extra={`${checkDone}/${checklist.length}`} />
       </div>
-      <div className="bg-card border border-border rounded-lg p-4">
+      <div className="bg-card border border-border rounded-lg p-4 mt-1">
         <p className="text-[13px] font-medium text-foreground mb-3">Trip members</p>
         <div className="flex flex-wrap gap-2">
           {members.map(m => (
-            <div key={m.id} className="flex items-center gap-1.5 px-2.5 py-1.5 border border-border rounded-full">
+            <div key={m.id} className="flex items-center gap-1.5 px-2.5 py-1.5 border border-border rounded-full bg-background/50">
               <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-medium" style={{ background: m.color, color: '#fff' }}>
                 {m.initials}
               </div>
@@ -89,7 +89,7 @@ export default function OverviewSection({ trip, activities, expenses, checklist,
 
       {/* Delete confirmation */}
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
-        <AlertDialogContent>
+        <AlertDialogContent className="w-[90vw] max-w-md rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete "{trip.name}"?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -140,13 +140,13 @@ function EditTripDialog({ trip, open, onClose, onSave }: { trip: Trip; open: boo
 
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md w-[90vw] rounded-xl p-5 sm:p-6">
         <DialogHeader><DialogTitle>Edit Trip</DialogTitle></DialogHeader>
         <div className="space-y-3">
           <Field label="Trip name" value={name} onChange={setName} />
           <Field label="Destination" value={destination} onChange={setDestination} />
           <Field label="Budget" value={budget} onChange={setBudget} type="number" />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Start date" value={startDate} onChange={setStartDate} type="date" />
             <Field label="End date" value={endDate} onChange={setEndDate} type="date" />
           </div>
@@ -172,7 +172,7 @@ function Field({ label, value, onChange, type = 'text' }: { label: string; value
 
 function Metric({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="bg-secondary rounded-lg p-3">
+    <div className="bg-secondary/60 border border-border/50 rounded-lg p-3">
       <p className="text-[11px] text-muted-foreground mb-1">{label}</p>
       <p className="text-base font-medium text-foreground">{value}</p>
       {sub && <p className="text-[11px] text-muted-foreground mt-0.5">{sub}</p>}
@@ -182,7 +182,7 @@ function Metric({ label, value, sub }: { label: string; value: string; sub?: str
 
 function MetricProgress({ label, value, max, extra }: { label: string; value: number; max: number; extra?: string }) {
   return (
-    <div className="bg-secondary rounded-lg p-3">
+    <div className="bg-secondary/60 border border-border/50 rounded-lg p-3">
       <p className="text-[11px] text-muted-foreground mb-1">{label}</p>
       <p className="text-xl font-medium text-foreground">{extra || value}</p>
       <div className="h-1 bg-muted rounded-full mt-1.5 overflow-hidden">
