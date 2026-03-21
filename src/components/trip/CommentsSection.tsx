@@ -118,8 +118,8 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
         attachmentUrl = data.publicUrl;
         attachmentType = selectedFile.type;
         
-      } catch (error) {
-        toast.error('Failed to upload file');
+      } catch (error: any) {
+        toast.error(error.message || 'Failed to upload file');
         setIsUploading(false);
         return;
       }
@@ -140,8 +140,9 @@ export default function CommentsSection({ tripId, comments: initialComments, mem
         if (fileInputRef.current) fileInputRef.current.value = '';
         inputRef.current?.focus();
       },
-      onError: () => {
-        toast.error('Failed to send message');
+      onError: (err: any) => {
+        // Show the ACTUAL database error to the user
+        toast.error(err.message || 'Failed to send message');
         setIsUploading(false);
       }
     });

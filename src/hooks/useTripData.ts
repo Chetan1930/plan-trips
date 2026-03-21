@@ -196,8 +196,21 @@ export function useCreateComment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (c: { trip_id: string; user_id: string; author_name: string; text: string; attachment_url?: string | null; attachment_type?: string | null }) => {
-      const { error } = await supabase.from('comments').insert(c);
-      if (error) throw error;
+      
+      // We dynamically build the payload. 
+      // If the user hasn't run the SQL migration for attachments yet, normal text messages will still work!
+      const payload: any = {
+        trip_id: c.trip_id,
+        user_id: c.user_id,
+        author_name: c.author_name,
+        text: c.text || '',
+      };
+      
+      if (c.attachment_url) payload.attachment_url = c.attachment_url;
+      if (c.attachment_type) payload.attachment_type = c.attachment_type;
+
+      const { error } = await supabase.from('comments').insert(payload);
+      if (error) throw new Error(error.message); // Pass exact error message to UI
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['comments'] }),
   });
