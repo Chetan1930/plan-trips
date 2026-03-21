@@ -38,6 +38,7 @@ export interface ChecklistItem {
   is_done: boolean;
   list_type: string;
   assigned_to: string | null;
+  added_by?: string | null;
 }
 
 export interface TripMember {
