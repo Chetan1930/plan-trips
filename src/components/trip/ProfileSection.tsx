@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, Loader2, Save } from 'lucide-react';
+import { User, Mail, Lock, Loader2, Save, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ProfileSection() {
@@ -57,6 +57,27 @@ export default function ProfileSection() {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto space-y-6">
       
+      {/* Feedback & Support Banner */}
+      <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+            <MessageSquare className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-foreground">Feedback & Support</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Have a feature request or found a bug? I'd love to hear from you.</p>
+          </div>
+          <a
+            href="https://linkedin.com/in/chetan71"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center px-4 py-2 text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity whitespace-nowrap w-full sm:w-auto"
+          >
+            Contact Chetan
+          </a>
+        </div>
+      </div>
+
       {/* Personal Information */}
       <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
         <div className="flex items-center gap-2 mb-4">
