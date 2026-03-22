@@ -16,7 +16,8 @@ interface Invitation {
   created_at: string;
   trip_name?: string;
   trip_destination?: string;
-  invited_by?: string;
+  invited_by_name?: string;
+  invited_by_email?: string;
 }
 
 export default function InvitationsSection() {
@@ -26,7 +27,6 @@ export default function InvitationsSection() {
   const { data: invitations = [], isLoading } = useQuery({
     queryKey: ['invitations', user?.email],
     queryFn: async () => {
-      // Get pending members matching user's email where user_id is null
       const { data: members, error } = await supabase
         .from('trip_members')
         .select('*')
@@ -34,21 +34,18 @@ export default function InvitationsSection() {
         .is('user_id', null);
       if (error) throw error;
 
-      // Fetch trip details and inviter info for each invitation
       const enriched: Invitation[] = [];
       for (const m of members || []) {
-        const { data: trip } = await supabase.from('trips').select('name, destination, user_id').eq('id', m.trip_id).single();
-        let inviterName = 'Someone';
-        if (trip) {
-          const { data: owner } = await supabase.from('trip_members').select('name').eq('trip_id', m.trip_id).eq('role', 'owner').single();
-          if (owner) inviterName = owner.name;
-        }
+        // Use SECURITY DEFINER function to get trip info regardless of RLS
+        const { data: tripInfo } = await supabase.rpc('get_trip_info_for_invitation', { _trip_id: m.trip_id });
+        const info = tripInfo?.[0];
         enriched.push({
           ...m,
           color: m.color || '#5DCAA5',
-          trip_name: trip?.name || 'Unknown Trip',
-          trip_destination: trip?.destination || '',
-          invited_by: inviterName,
+          trip_name: info?.trip_name || 'Unknown Trip',
+          trip_destination: info?.trip_destination || '',
+          invited_by_name: info?.owner_name || 'Someone',
+          invited_by_email: info?.owner_email || '',
         });
       }
       return enriched;
@@ -124,13 +121,19 @@ export default function InvitationsSection() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-semibold text-foreground">{inv.trip_name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-                    <MapPin className="w-3 h-3" /> {inv.trip_destination}
-                  </p>
+                  {inv.trip_destination && (
+                    <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> {inv.trip_destination}
+                    </p>
+                  )}
                   <div className="mt-2 flex items-center gap-1.5">
                     <Users className="w-3 h-3 text-muted-foreground" />
                     <p className="text-xs text-muted-foreground">
-                      <span className="font-medium text-foreground">{inv.invited_by}</span> invited you as <span className="font-medium text-foreground">{inv.role}</span>
+                      <span className="font-medium text-foreground">{inv.invited_by_name}</span>
+                      {inv.invited_by_email && (
+                        <span className="text-muted-foreground"> ({inv.invited_by_email})</span>
+                      )}
+                      {' '}invited you as <span className="font-medium text-foreground">{inv.role}</span>
                     </p>
                   </div>
                 </div>
