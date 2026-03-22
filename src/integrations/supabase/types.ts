@@ -269,6 +269,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_trip_info_for_invitation: {
+        Args: { _trip_id: string }
+        Returns: {
+          owner_email: string
+          owner_name: string
+          trip_destination: string
+          trip_name: string
+        }[]
+      }
       get_user_email: { Args: { _user_id: string }; Returns: string }
       is_trip_member: {
         Args: { _trip_id: string; _user_id: string }
