@@ -60,6 +60,7 @@ export type Database = {
       }
       checklist_items: {
         Row: {
+          added_by: string | null
           assigned_to: string | null
           created_at: string
           id: string
@@ -70,6 +71,7 @@ export type Database = {
           trip_id: string
         }
         Insert: {
+          added_by?: string | null
           assigned_to?: string | null
           created_at?: string
           id?: string
@@ -80,6 +82,7 @@ export type Database = {
           trip_id: string
         }
         Update: {
+          added_by?: string | null
           assigned_to?: string | null
           created_at?: string
           id?: string
@@ -101,6 +104,8 @@ export type Database = {
       }
       comments: {
         Row: {
+          attachment_type: string | null
+          attachment_url: string | null
           author_name: string
           created_at: string
           id: string
@@ -109,6 +114,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          attachment_type?: string | null
+          attachment_url?: string | null
           author_name: string
           created_at?: string
           id?: string
@@ -117,6 +124,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          attachment_type?: string | null
+          attachment_url?: string | null
           author_name?: string
           created_at?: string
           id?: string
