@@ -1,7 +1,6 @@
-import { MapPin, LayoutGrid, Calendar, CheckSquare, Users, MessageSquare, Plus, LogOut, Mail } from 'lucide-react';
+import { MapPin, LayoutGrid, Calendar, CheckSquare, Users, MessageSquare, Plus, LogOut, Mail, LifeBuoy } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import type { NavSection, Trip } from '@/lib/types';
-import { motion } from 'framer-motion';
 
 interface SidebarProps {
   activeNav: NavSection;
@@ -55,39 +54,54 @@ export default function Sidebar({ activeNav, setActiveNav, trips, activeTripId, 
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto px-2 py-2">
-        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2 py-1.5">Menu</p>
-        {navItems.map(({ key, label, icon: Icon, emoji }) => (
-          <button
-            key={key}
-            onClick={() => handleNav(key)}
-            className={`w-full flex items-center gap-2 px-2 py-2 md:py-1.5 rounded-md text-[13px] transition-colors mb-0.5
-              ${activeNav === key ? 'bg-accent text-accent-foreground font-medium' : 'text-sidebar-foreground hover:bg-muted hover:text-foreground'}`}
-          >
-            {Icon ? <Icon className="w-[15px] h-[15px] shrink-0 opacity-70" /> : <span className="w-[15px] h-[15px] shrink-0 flex items-center justify-center text-xs font-semibold opacity-70">{emoji}</span>}
-            {label}
-          </button>
-        ))}
+      <div className="flex-1 overflow-y-auto px-2 py-2 flex flex-col">
+        <div>
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2 py-1.5">Menu</p>
+          {navItems.map(({ key, label, icon: Icon, emoji }) => (
+            <button
+              key={key}
+              onClick={() => handleNav(key)}
+              className={`w-full flex items-center gap-2 px-2 py-2 md:py-1.5 rounded-md text-[13px] transition-colors mb-0.5
+                ${activeNav === key ? 'bg-accent text-accent-foreground font-medium' : 'text-sidebar-foreground hover:bg-muted hover:text-foreground'}`}
+            >
+              {Icon ? <Icon className="w-[15px] h-[15px] shrink-0 opacity-70" /> : <span className="w-[15px] h-[15px] shrink-0 flex items-center justify-center text-xs font-semibold opacity-70">{emoji}</span>}
+              {label}
+            </button>
+          ))}
 
-        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2 pt-4 pb-1.5">Your Trips</p>
-        {trips.map(trip => (
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2 pt-4 pb-1.5">Your Trips</p>
+          {trips.map(trip => (
+            <button
+              key={trip.id}
+              onClick={() => handleTrip(trip.id)}
+              className={`w-full flex items-center gap-1.5 px-2 py-2 md:py-1.5 rounded-md text-xs transition-colors
+                ${activeTripId === trip.id && activeNav !== 'profile' && activeNav !== 'invitations' ? 'bg-accent text-accent-foreground font-medium' : 'text-sidebar-foreground hover:bg-muted'}`}
+            >
+              <div className="w-2 h-2 rounded-full shrink-0" style={{ background: trip.color }} />
+              <span className="truncate">{trip.name}</span>
+            </button>
+          ))}
           <button
-            key={trip.id}
-            onClick={() => handleTrip(trip.id)}
-            className={`w-full flex items-center gap-1.5 px-2 py-2 md:py-1.5 rounded-md text-xs transition-colors
-              ${activeTripId === trip.id && activeNav !== 'profile' && activeNav !== 'invitations' ? 'bg-accent text-accent-foreground font-medium' : 'text-sidebar-foreground hover:bg-muted'}`}
+            onClick={() => { onCreateTrip(); onNavClick?.(); }}
+            className="w-full flex items-center gap-1.5 px-2 py-2 md:py-1.5 rounded-md text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mt-0.5"
           >
-            <div className="w-2 h-2 rounded-full shrink-0" style={{ background: trip.color }} />
-            <span className="truncate">{trip.name}</span>
+            <Plus className="w-3 h-3" />
+            New trip
           </button>
-        ))}
-        <button
-          onClick={() => { onCreateTrip(); onNavClick?.(); }}
-          className="w-full flex items-center gap-1.5 px-2 py-2 md:py-1.5 rounded-md text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mt-0.5"
-        >
-          <Plus className="w-3 h-3" />
-          New trip
-        </button>
+        </div>
+
+        {/* Link to Contact Developer */}
+        <div className="mt-auto pt-6 pb-2">
+          <a
+            href="https://linkedin.com/in/chetan71"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center gap-2 px-2 py-2 md:py-1.5 rounded-md text-[13px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            <LifeBuoy className="w-[15px] h-[15px] shrink-0 opacity-70" />
+            Feedback & Support
+          </a>
+        </div>
       </div>
 
       {/* Footer / Profile */}

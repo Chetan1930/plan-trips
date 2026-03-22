@@ -44,25 +44,28 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-background overflow-hidden">
+    <div className="min-h-screen flex w-full bg-background relative overflow-hidden">
       
-      {/* Left side - Image & Branding (Hidden on mobile) */}
-      <div className="hidden lg:flex w-1/2 relative bg-zinc-900 items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 z-0">
-          <motion.img 
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.6 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" 
-            alt="Travel background" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/40 to-transparent" />
-        </div>
+      {/* Background Section (Full width on mobile, Left half on Desktop) */}
+      <div className="absolute inset-0 lg:w-1/2 z-0 bg-zinc-900 overflow-hidden flex items-center justify-center">
+        {/* Background Image */}
+        <motion.img 
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.6 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" 
+          alt="Travel background" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        
+        {/* Desktop Overlay */}
+        <div className="hidden lg:block absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/40 to-transparent" />
+        
+        {/* Mobile Overlay (Blurs and dims the image so the form is legible) */}
+        <div className="lg:hidden absolute inset-0 bg-background/85 backdrop-blur-[3px]" />
 
-        {/* Floating Icons Background */}
-        <div className="absolute inset-0 z-0 overflow-hidden opacity-20">
+        {/* Floating Icons Background (Desktop Only) */}
+        <div className="absolute inset-0 z-0 overflow-hidden opacity-20 hidden lg:block">
           <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }} className="absolute top-1/4 left-1/4">
             <Plane className="w-24 h-24 text-white" />
           </motion.div>
@@ -71,8 +74,8 @@ export default function AuthPage() {
           </motion.div>
         </div>
 
-        {/* Branding Content */}
-        <div className="relative z-10 p-12 text-white max-w-xl">
+        {/* Branding Content (Desktop Only) */}
+        <div className="hidden lg:flex relative z-10 p-12 text-white max-w-xl flex-col justify-center h-full w-full">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -109,7 +112,7 @@ export default function AuthPage() {
       </div>
 
       {/* Right side - Auth Form */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-12 relative">
+      <div className="w-full lg:w-1/2 lg:ml-auto flex flex-col justify-center items-center p-6 sm:p-12 relative z-10 min-h-screen">
         
         {/* Mobile Logo (Only visible on small screens) */}
         <motion.div 

@@ -3,15 +3,16 @@ import { format } from 'date-fns';
 import { Trash2, Plus, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import type { Activity } from '@/lib/types';
+import type { Activity, Trip } from '@/lib/types';
 import { useCreateActivity, useDeleteActivity } from '@/hooks/useTripData';
 
 interface Props {
   tripId: string;
   activities: Activity[];
+  trip: Trip | undefined;
 }
 
-export default function ItinerarySection({ tripId, activities }: Props) {
+export default function ItinerarySection({ tripId, activities, trip }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
@@ -78,7 +79,14 @@ export default function ItinerarySection({ tripId, activities }: Props) {
               <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Location" className="w-full sm:flex-1 px-3 py-2 text-sm sm:text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground placeholder:text-muted-foreground" />
             </div>
             <div className="flex flex-col sm:flex-row gap-2 md:mb-4 mb-3">
-              <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full sm:flex-1 px-3 py-2 text-sm sm:text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground" />
+              <input 
+                type="date" 
+                value={date} 
+                onChange={e => setDate(e.target.value)} 
+                min={trip?.start_date || undefined}
+                max={trip?.end_date || undefined}
+                className="w-full sm:flex-1 px-3 py-2 text-sm sm:text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground" 
+              />
               <div className="flex gap-2 w-full sm:w-auto sm:flex-1">
                 <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} className="w-full flex-1 px-3 py-2 text-sm sm:text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground" />
                 <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} className="w-full flex-1 px-3 py-2 text-sm sm:text-xs bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground" />
