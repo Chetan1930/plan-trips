@@ -40,32 +40,35 @@ export default function AuthPage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 15 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } }
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
 
   return (
     <div className="min-h-screen flex w-full bg-background relative overflow-hidden">
       
       {/* Background Section (Full width on mobile, Left half on Desktop) */}
-      <div className="absolute inset-0 lg:w-1/2 z-0 bg-zinc-900 overflow-hidden flex items-center justify-center">
+      <div className="absolute inset-0 lg:w-1/2 z-0 bg-background overflow-hidden flex items-center justify-center">
+        {/* Warm amber/gold background base (Matches LandingPage) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(40,95%,55%)] via-[hsl(35,90%,50%)] to-[hsl(30,85%,45%)]" />
+
         {/* Background Image */}
         <motion.img 
           initial={{ scale: 1.1, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.6 }}
+          animate={{ scale: 1, opacity: 0.4 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
           src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" 
           alt="Travel background" 
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
         />
         
         {/* Desktop Overlay */}
-        <div className="hidden lg:block absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/40 to-transparent" />
+        <div className="hidden lg:block absolute inset-0 bg-gradient-to-t from-[hsl(30,85%,40%)]/90 via-[hsl(35,90%,50%)]/40 to-transparent" />
         
         {/* Mobile Overlay (Blurs and dims the image so the form is legible) */}
         <div className="lg:hidden absolute inset-0 bg-background/85 backdrop-blur-[3px]" />
 
         {/* Floating Icons Background (Desktop Only) */}
-        <div className="absolute inset-0 z-0 overflow-hidden opacity-20 hidden lg:block">
+        <div className="absolute inset-0 z-0 overflow-hidden opacity-30 hidden lg:block pointer-events-none">
           <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }} className="absolute top-1/4 left-1/4">
             <Plane className="w-24 h-24 text-white" />
           </motion.div>
@@ -82,25 +85,25 @@ export default function AuthPage() {
             transition={{ duration: 0.7, delay: 0.3 }}
           >
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-                <MapPin className="w-6 h-6 text-primary-foreground" />
+              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg shadow-black/10 border border-white/20">
+                <MapPin className="w-6 h-6 text-white" />
               </div>
               <span className="text-3xl font-bold tracking-tight">Wandr</span>
             </div>
             
             <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
               Plan together.<br/>
-              <span className="text-primary/90">Wander further.</span>
+              <span className="text-white/80">Wander further.</span>
             </h1>
             
-            <p className="text-lg text-zinc-300 leading-relaxed mb-8">
+            <p className="text-lg text-white/80 leading-relaxed mb-8">
               The collaborative trip planner built for groups. Build day-by-day itineraries, split expenses, assign packing tasks, and keep everyone on the same page.
             </p>
 
-            <div className="flex items-center gap-4 text-sm font-medium text-zinc-400">
+            <div className="flex items-center gap-4 text-sm font-medium text-white/80">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-zinc-900 bg-zinc-800 flex items-center justify-center overflow-hidden">
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-[hsl(35,90%,50%)] bg-background flex items-center justify-center overflow-hidden">
                     <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" />
                   </div>
                 ))}
@@ -112,7 +115,7 @@ export default function AuthPage() {
       </div>
 
       {/* Right side - Auth Form */}
-      <div className="w-full lg:w-1/2 lg:ml-auto flex flex-col justify-center items-center p-6 sm:p-12 relative z-10 min-h-screen">
+      <div className="w-full lg:w-1/2 lg:ml-auto flex flex-col justify-center items-center p-6 sm:p-12 relative z-10 min-h-screen bg-background">
         
         {/* Mobile Logo (Only visible on small screens) */}
         <motion.div 
