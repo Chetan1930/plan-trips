@@ -7,6 +7,8 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.4"
   }
@@ -102,34 +104,34 @@ export type Database = {
       }
       comments: {
         Row: {
+          attachment_type: string | null
+          attachment_url: string | null
           author_name: string
           created_at: string
           id: string
           text: string
           trip_id: string
           user_id: string
-          attachment_url: string | null
-          attachment_type: string | null
         }
         Insert: {
+          attachment_type?: string | null
+          attachment_url?: string | null
           author_name: string
           created_at?: string
           id?: string
           text: string
           trip_id: string
           user_id: string
-          attachment_url?: string | null
-          attachment_type?: string | null
         }
         Update: {
+          attachment_type?: string | null
+          attachment_url?: string | null
           author_name?: string
           created_at?: string
           id?: string
           text?: string
           trip_id?: string
           user_id?: string
-          attachment_url?: string | null
-          attachment_type?: string | null
         }
         Relationships: [
           {
@@ -267,6 +269,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_trip_info_for_invitation: {
+        Args: { _trip_id: string }
+        Returns: {
+          owner_email: string
+          owner_name: string
+          trip_destination: string
+          trip_name: string
+        }[]
+      }
       get_user_email: { Args: { _user_id: string }; Returns: string }
       is_trip_member: {
         Args: { _trip_id: string; _user_id: string }
