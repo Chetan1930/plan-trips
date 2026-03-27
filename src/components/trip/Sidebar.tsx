@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { MapPin, LayoutGrid, Calendar, CheckSquare, Users, MessageSquare, Plus, LogOut, Mail, LifeBuoy } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import type { NavSection, Trip } from '@/lib/types';
