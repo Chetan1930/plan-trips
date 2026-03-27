@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, MapPin, Calendar, IndianRupee, Activity, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import type { Trip, Activity, Expense, ChecklistItem, TripMember } from '@/lib/types';
+import type { Trip, Activity as TripActivity, Expense, ChecklistItem, TripMember } from '@/lib/types';
 import { useUpdateTrip, useDeleteTrip } from '@/hooks/useTripData';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 interface OverviewProps {
   trip: Trip | undefined;
-  activities: Activity[];
+  activities: TripActivity[];
   expenses: Expense[];
   checklist: ChecklistItem[];
   members: TripMember[];
@@ -49,47 +49,98 @@ export default function OverviewSection({ trip, activities, expenses, checklist,
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 md:space-y-3">
-      {/* Admin controls */}
-      {isAdmin && (
-        <div className="flex items-center justify-end gap-2">
-          <button onClick={() => setShowEdit(true)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-input rounded-md hover:bg-muted text-foreground transition-colors">
-            <Pencil className="w-3 h-3" /> Edit Trip
-          </button>
-          <button onClick={() => setShowDelete(true)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-destructive/30 rounded-md hover:bg-destructive/10 text-destructive transition-colors">
-            <Trash2 className="w-3 h-3" /> Delete
-          </button>
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      {/* Header & Admin controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground tracking-tight">{trip.name}</h2>
+          <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5" /> {trip.destination}
+          </p>
         </div>
-      )}
+        {isAdmin && (
+          <div className="flex items-center gap-2">
+            <button onClick={() => setShowEdit(true)} className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors">
+              <Pencil className="w-3.5 h-3.5" /> Edit Trip
+            </button>
+            <button onClick={() => setShowDelete(true)} className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium border border-destructive/20 bg-destructive/5 text-destructive rounded-lg hover:bg-destructive/10 transition-colors">
+              <Trash2 className="w-3.5 h-3.5" /> Delete
+            </button>
+          </div>
+        )}
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Metric label="Destination" value={trip.destination} />
-        <Metric label="Duration" value={days ? `${days} days` : '—'} sub={dateRange} />
-        <Metric label="Total Budget" value={`₹${Number(trip.budget).toLocaleString('en-IN')}`} sub={`₹${totalSpent.toLocaleString('en-IN')} spent`} />
+      {/* Main Metrics Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Destination Card - Highlighted */}
+        <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-5">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <MapPin className="w-16 h-16" />
+          </div>
+          <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Destination</p>
+          <p className="text-2xl font-bold text-foreground relative z-10">{trip.destination}</p>
+        </div>
+
+        <MetricCard 
+          icon={Calendar} 
+          label="Duration" 
+          value={days ? `${days} days` : '—'} 
+          sub={dateRange} 
+        />
+        <MetricCard 
+          icon={IndianRupee} 
+          label="Budget Status" 
+          value={`₹${totalSpent.toLocaleString('en-IN')}`} 
+          sub={`of ₹${Number(trip.budget).toLocaleString('en-IN')} total`} 
+        />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <MetricProgress label="Activities planned" value={activities.length} max={Math.max(activities.length, 1)} />
-        <MetricProgress label="Checklist progress" value={checkDone} max={Math.max(checklist.length, 1)} extra={`${checkDone}/${checklist.length}`} />
+
+      {/* Progress Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <MetricProgress 
+          icon={Activity}
+          label="Activities planned" 
+          value={activities.length} 
+          max={Math.max(activities.length, 1)} 
+          colorClass="bg-blue-500"
+        />
+        <MetricProgress 
+          icon={CheckCircle2}
+          label="Checklist progress" 
+          value={checkDone} 
+          max={Math.max(checklist.length, 1)} 
+          extra={`${checkDone} of ${checklist.length} tasks`} 
+          colorClass="bg-primary"
+        />
       </div>
-      <div className="bg-card border border-border rounded-lg p-4 mt-1">
-        <p className="text-[13px] font-medium text-foreground mb-3">Trip members</p>
-        <div className="flex flex-wrap gap-2">
+
+      {/* Members Section */}
+      <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm font-bold text-foreground">Travel Crew</p>
+          <span className="text-xs font-medium text-muted-foreground bg-secondary px-2.5 py-1 rounded-full">
+            {members.length} member{members.length !== 1 && 's'}
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2.5">
           {members.map(m => (
-            <div key={m.id} className="flex items-center gap-1.5 px-2.5 py-1.5 border border-border rounded-full bg-background/50">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-medium" style={{ background: m.color, color: '#fff' }}>
+            <div key={m.id} className="flex items-center gap-2 px-3 py-1.5 border border-border/60 rounded-full bg-secondary/30 hover:bg-secondary/60 transition-colors">
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm" style={{ background: m.color, color: '#fff' }}>
                 {m.initials}
               </div>
-              <span className="text-xs text-foreground">{m.name}</span>
-              <span className="text-[10px] text-muted-foreground">{m.role}</span>
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold text-foreground leading-none">{m.name}</span>
+                <span className="text-[9px] text-muted-foreground mt-0.5 leading-none uppercase">{m.role}</span>
+              </div>
             </div>
           ))}
-          {members.length === 0 && <p className="text-xs text-muted-foreground">No members yet</p>}
+          {members.length === 0 && <p className="text-sm text-muted-foreground">No members yet</p>}
         </div>
       </div>
 
       {/* Delete confirmation */}
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
-        <AlertDialogContent className="w-[90vw] max-w-md rounded-xl">
+        <AlertDialogContent className="w-[90vw] max-w-md rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete "{trip.name}"?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -97,8 +148,8 @@ export default function OverviewSection({ trip, activities, expenses, checklist,
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl">
               Delete Trip
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -118,7 +169,6 @@ function EditTripDialog({ trip, open, onClose, onSave }: { trip: Trip; open: boo
   const [startDate, setStartDate] = useState(trip.start_date || '');
   const [endDate, setEndDate] = useState(trip.end_date || '');
 
-  // Reset form when trip changes
   const [prevId, setPrevId] = useState(trip.id);
   if (trip.id !== prevId) {
     setPrevId(trip.id);
@@ -140,19 +190,19 @@ function EditTripDialog({ trip, open, onClose, onSave }: { trip: Trip; open: boo
 
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-md w-[90vw] rounded-xl p-5 sm:p-6">
-        <DialogHeader><DialogTitle>Edit Trip</DialogTitle></DialogHeader>
-        <div className="space-y-3">
+      <DialogContent className="max-w-md w-[90vw] rounded-2xl p-6">
+        <DialogHeader><DialogTitle className="text-xl">Edit Trip</DialogTitle></DialogHeader>
+        <div className="space-y-4 mt-2">
           <Field label="Trip name" value={name} onChange={setName} />
           <Field label="Destination" value={destination} onChange={setDestination} />
           <Field label="Budget" value={budget} onChange={setBudget} type="number" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Start date" value={startDate} onChange={setStartDate} type="date" />
             <Field label="End date" value={endDate} onChange={setEndDate} type="date" />
           </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <button onClick={onClose} className="px-3 py-1.5 text-xs font-medium border border-input rounded-md hover:bg-muted text-foreground">Cancel</button>
-            <button onClick={handleSave} className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded-md hover:opacity-90">Save Changes</button>
+          <div className="flex justify-end gap-3 pt-4">
+            <button onClick={onClose} className="px-4 py-2 text-sm font-medium border border-input rounded-xl hover:bg-muted text-foreground transition-colors">Cancel</button>
+            <button onClick={handleSave} className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity">Save Changes</button>
           </div>
         </div>
       </DialogContent>
@@ -163,39 +213,67 @@ function EditTripDialog({ trip, open, onClose, onSave }: { trip: Trip; open: boo
 function Field({ label, value, onChange, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
   return (
     <div>
-      <label className="text-[11px] font-medium text-muted-foreground mb-1 block">{label}</label>
+      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">{label}</label>
       <input type={type} value={value} onChange={e => onChange(e.target.value)}
-        className="w-full px-2.5 py-1.5 text-sm bg-card border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-ring text-foreground" />
+        className="w-full px-3 py-2.5 text-sm bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground transition-all shadow-sm" />
     </div>
   );
 }
 
-function Metric({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function MetricCard({ icon: Icon, label, value, sub }: { icon: any; label: string; value: string; sub?: string }) {
   return (
-    <div className="bg-secondary/60 border border-border/50 rounded-lg p-3">
-      <p className="text-[11px] text-muted-foreground mb-1">{label}</p>
-      <p className="text-base font-medium text-foreground">{value}</p>
-      {sub && <p className="text-[11px] text-muted-foreground mt-0.5">{sub}</p>}
-    </div>
-  );
-}
-
-function MetricProgress({ label, value, max, extra }: { label: string; value: number; max: number; extra?: string }) {
-  return (
-    <div className="bg-secondary/60 border border-border/50 rounded-lg p-3">
-      <p className="text-[11px] text-muted-foreground mb-1">{label}</p>
-      <p className="text-xl font-medium text-foreground">{extra || value}</p>
-      <div className="h-1 bg-muted rounded-full mt-1.5 overflow-hidden">
-        <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(value / max) * 100}%` }} />
+    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-7 h-7 rounded-lg bg-secondary flex items-center justify-center">
+          <Icon className="w-4 h-4 text-muted-foreground" />
+        </div>
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
       </div>
+      <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
+      {sub && <p className="text-[13px] text-muted-foreground mt-1 font-medium">{sub}</p>}
+    </div>
+  );
+}
+
+function MetricProgress({ icon: Icon, label, value, max, extra, colorClass }: { icon: any; label: string; value: number; max: number; extra?: string; colorClass: string }) {
+  const percentage = Math.min(100, Math.round((value / max) * 100));
+  
+  return (
+    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-secondary flex items-center justify-center">
+            <Icon className="w-4 h-4 text-muted-foreground" />
+          </div>
+          <p className="text-sm font-bold text-foreground">{label}</p>
+        </div>
+        <span className="text-xl font-black tabular-nums text-foreground">{extra || value}</span>
+      </div>
+      <div className="h-2.5 bg-secondary rounded-full overflow-hidden">
+        <motion.div 
+          initial={{ width: 0 }}
+          animate={{ width: `${percentage}%` }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className={`h-full ${colorClass} rounded-full relative`}
+        >
+          <div className="absolute inset-0 bg-white/20 w-full animate-[shimmer_2s_infinite]" />
+        </motion.div>
+      </div>
+      <p className="text-right text-[10px] font-bold text-muted-foreground mt-2 uppercase tracking-wider">{percentage}% Complete</p>
     </div>
   );
 }
 
 function EmptyState() {
   return (
-    <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
-      Select or create a trip to get started
+    <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+      <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-6">
+        <MapPin className="w-10 h-10 text-primary" />
+      </div>
+      <h2 className="text-2xl font-bold text-foreground">No Trip Selected</h2>
+      <p className="text-muted-foreground mt-2 max-w-sm">
+        Select a trip from the sidebar or create a new one to view its overview and start planning.
+      </p>
     </div>
   );
 }
