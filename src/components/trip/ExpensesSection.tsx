@@ -55,7 +55,7 @@ export default function ExpensesSection({ tripId, expenses, trip, members }: Pro
           setDesc(''); setAmount(''); setCategory('Other'); setShowForm(false);
           toast.success('Expense added successfully');
         },
-        onError: (err: any) => toast.error(err.message || 'Failed to add expense')
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Failed to add expense')
       }
     );
   };

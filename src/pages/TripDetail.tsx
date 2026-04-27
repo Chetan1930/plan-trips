@@ -12,18 +12,26 @@ import MembersSection from '@/components/trip/MembersSection';
 import CommentsSection from '@/components/trip/CommentsSection';
 import CreateTripDialog from '@/components/trip/CreateTripDialog';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import type { NavSection } from '@/lib/types';
 
-const sectionMap: Record<string, string> = {
+const sectionMap: Record<NavSection, string> = {
   overview: 'Overview', itinerary: 'Itinerary', expenses: 'Expenses',
   checklists: 'Checklists', members: 'Members', comments: 'Comments',
+  invitations: 'Invitations', profile: 'Profile',
 };
+
+const routeSections: NavSection[] = ['overview', 'itinerary', 'expenses', 'checklists', 'members', 'comments', 'invitations'];
+
+function isNavSection(value: string): value is NavSection {
+  return routeSections.includes(value as NavSection);
+}
 
 export default function TripDetail() {
   const { tripId, section } = useParams<{ tripId: string; section?: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const activeSection = section || 'overview';
+  const activeSection: NavSection = section && isNavSection(section) ? section : 'overview';
   const [showCreateTrip, setShowCreateTrip] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -44,7 +52,7 @@ export default function TripDetail() {
     }
   }, [trips, tripId, activeTrip, navigate]);
 
-  const handleNavSection = (nav: string) => {
+  const handleNavSection = (nav: NavSection) => {
     if (nav === 'profile') {
       navigate('/profile');
     } else if (nav === 'invitations') {
@@ -70,8 +78,8 @@ export default function TripDetail() {
 
       <div className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-200 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <Sidebar
-          activeNav={activeSection as any}
-          setActiveNav={handleNavSection as any}
+          activeNav={activeSection}
+          setActiveNav={handleNavSection}
           trips={trips}
           activeTripId={tripId}
           setActiveTripId={handleTripSwitch}

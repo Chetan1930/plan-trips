@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Check, Plus, User, ListTodo, Navigation, Sparkles } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import type { ChecklistItem } from '@/lib/types';
@@ -42,7 +43,7 @@ export default function ChecklistsSection({ tripId, checklist, packing }: Props)
   );
 }
 
-function ChecklistCard({ icon: Icon, title, subtitle, listType, tripId, items, colorClass }: { icon: any; title: string; subtitle: string; listType: string; tripId: string; items: ChecklistItem[]; colorClass: string }) {
+function ChecklistCard({ icon: Icon, title, subtitle, listType, tripId, items, colorClass }: { icon: LucideIcon; title: string; subtitle: string; listType: string; tripId: string; items: ChecklistItem[]; colorClass: string }) {
   const [newItem, setNewItem] = useState('');
   const createItem = useCreateChecklistItem();
   const toggleItem = useToggleChecklistItem();
@@ -64,7 +65,7 @@ function ChecklistCard({ icon: Icon, title, subtitle, listType, tripId, items, c
       },
       {
         onSuccess: () => setNewItem(''),
-        onError: (err: any) => toast.error(err.message || 'Failed to add item')
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Failed to add item')
       }
     );
   };
@@ -73,7 +74,7 @@ function ChecklistCard({ icon: Icon, title, subtitle, listType, tripId, items, c
     toggleItem.mutate(
       { id: item.id, is_done: !item.is_done },
       {
-        onError: (err: any) => toast.error(err.message || 'Failed to update item')
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Failed to update item')
       }
     );
   };

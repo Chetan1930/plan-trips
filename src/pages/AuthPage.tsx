@@ -22,8 +22,8 @@ export default function AuthPage() {
         await signIn(email, password);
         toast.success('Welcome back!');
       }
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
       setLoading(false);
     }

@@ -196,7 +196,14 @@ export function useCreateComment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (c: { trip_id: string; user_id: string; author_name: string; text: string; attachment_url?: string | null; attachment_type?: string | null }) => {
-      const payload: any = {
+      const payload: {
+        trip_id: string;
+        user_id: string;
+        author_name: string;
+        text: string;
+        attachment_url?: string | null;
+        attachment_type?: string | null;
+      } = {
         trip_id: c.trip_id,
         user_id: c.user_id,
         author_name: c.author_name,

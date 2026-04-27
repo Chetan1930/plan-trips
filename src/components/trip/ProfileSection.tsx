@@ -27,8 +27,8 @@ export default function ProfileSection() {
       });
       if (error) throw error;
       toast.success('Profile updated successfully');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update profile');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Failed to update profile');
     } finally {
       setIsSavingProfile(false);
     }
@@ -47,8 +47,8 @@ export default function ProfileSection() {
       if (error) throw error;
       toast.success('Password updated successfully');
       setPassword('');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update password');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Failed to update password');
     } finally {
       setIsSavingSecurity(false);
     }

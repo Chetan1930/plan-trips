@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { Pencil, Trash2, MapPin, Calendar, IndianRupee, Activity, CheckCircle2, Globe2, PlaneTakeoff } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Trip, Activity as TripActivity, Expense, ChecklistItem, TripMember } from '@/lib/types';
 import { useUpdateTrip, useDeleteTrip } from '@/hooks/useTripData';
@@ -250,7 +251,7 @@ function Field({ label, value, onChange, type = 'text' }: { label: string; value
   );
 }
 
-function MetricProgress({ icon: Icon, label, value, max, extra, colorClass, desc }: { icon: any; label: string; value: number; max: number; extra?: string; colorClass: string; desc: string }) {
+function MetricProgress({ icon: Icon, label, value, max, extra, colorClass, desc }: { icon: LucideIcon; label: string; value: number; max: number; extra?: string; colorClass: string; desc: string }) {
   const percentage = Math.min(100, Math.round((value / max) * 100));
   
   return (

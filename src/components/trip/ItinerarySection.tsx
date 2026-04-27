@@ -58,8 +58,8 @@ export default function ItinerarySection({ tripId, activities, trip }: Props) {
           setShowForm(false);
           toast.success('Activity added');
         },
-        onError: (err: any) => {
-          toast.error(err.message || 'Failed to add activity');
+        onError: (err: unknown) => {
+          toast.error(err instanceof Error ? err.message : 'Failed to add activity');
         }
       }
     );
@@ -67,7 +67,7 @@ export default function ItinerarySection({ tripId, activities, trip }: Props) {
 
   const handleDelete = (id: string) => {
     deleteActivity.mutate(id, {
-      onError: (err: any) => toast.error(err.message || 'Failed to delete activity')
+      onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Failed to delete activity')
     });
   }
 
