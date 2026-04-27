@@ -1,77 +1,96 @@
-# Welcome to your Chetan Chauhan project
+# Wandr
 
-## Project info
+Wandr is a collaborative trip planning app for groups. It helps travelers organize itineraries, track shared expenses, manage checklists, coordinate members, and chat in one place.
 
-**Live App**: https://plantrips.chetanchauhan.fun/
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-The app is currently hosted at:
+## Live App
 
 - https://plantrips.chetanchauhan.fun/
 
-You can continue deploying through your current hosting workflow (Lovable publish or your own CI/CD pipeline).
+## Features
 
-## Can I connect a custom domain to my Lovable project?
+- Group trip dashboard with section-based navigation
+- Day-by-day itinerary management
+- Shared expense tracking and budget overview
+- Checklist and packing list management
+- Member management and role-based collaboration
+- In-app comments/chat for trip discussions
+- Auth and profile management with Supabase
 
-Yes, you can!
+## Tech Stack
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- React + TypeScript
+- Vite
+- Tailwind CSS + shadcn/ui
+- Supabase (Auth, Database, Storage, Realtime)
+- TanStack Query
+- Vitest + Playwright
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+ recommended
+- npm 10+ recommended
+
+### 1) Clone and install
+
+```bash
+git clone <your-repo-url>
+cd plan-trips
+npm install
+```
+
+### 2) Configure environment variables
+
+Create a `.env` file using `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Set these required variables:
+
+- `VITE_SUPABASE_PROJECT_ID`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_SUPABASE_URL`
+
+### 3) Start development server
+
+```bash
+npm run dev
+```
+
+App runs on `http://localhost:8080`.
+
+## Scripts
+
+- `npm run dev` - start local development server
+- `npm run build` - production build
+- `npm run preview` - preview built app
+- `npm run lint` - run ESLint
+- `npm test` - run Vitest tests
+- `npm run test:watch` - run tests in watch mode
+
+## Production Readiness Checks
+
+Before deployment, run:
+
+```bash
+npm run lint
+npm test
+npm run build
+npx tsc --noEmit
+npm audit
+```
+
+## Project Structure
+
+- `src/components/` - UI components and trip feature sections
+- `src/pages/` - route-level pages
+- `src/hooks/` - auth/data hooks
+- `src/integrations/supabase/` - Supabase client and types
+- `supabase/` - database migrations and config
+
+## License
+
+Private project. All rights reserved.
