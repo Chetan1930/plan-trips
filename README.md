@@ -1,8 +1,8 @@
-# Welcome to your Lovable project
+# Welcome to your Chetan Chauhan project
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**Live App**: https://plantrips.chetanchauhan.fun/
 
 ## How can I edit this code?
 
@@ -62,7 +62,11 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+The app is currently hosted at:
+
+- https://plantrips.chetanchauhan.fun/
+
+You can continue deploying through your current hosting workflow (Lovable publish or your own CI/CD pipeline).
 
 ## Can I connect a custom domain to my Lovable project?
 
